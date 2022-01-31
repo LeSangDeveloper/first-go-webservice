@@ -9,7 +9,7 @@ var DbConn *sql.DB
 
 func SetupDatabase() {
 	var err error
-	DbConn, err = sql.Open("mysql", "root:123456@tcp(127.0.0.1:3306)/inventoryDB")
+	DbConn, err = sql.Open("mysql", "root:123456@tcp(127.0.0.1:3306)/inventorydb")
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"pluralsight/gowebservice/database"
 	"sort"
 	"sync"
 )
@@ -60,14 +61,32 @@ func removeProduct(productID int) {
 	delete(productMap.m, productID)
 }
 
-func getProductList() []Product {
-	productMap.RLock()
-	products := make([]Product, 0, len(productMap.m))
-	for _, value := range productMap.m {
-		products = append(products, value)
+func getProductList() ([]Product, error) {
+	results, err := database.DbConn.Query(`SELECT productId,
+	manufacturer,
+	sku,
+	upc,
+	pricePerUnit,
+	quantityOnHand,
+	productName FROM products`)
+	if err != nil {
+		return nil, err
 	}
-	productMap.RUnlock()
-	return products
+	defer results.Close()
+	products := make([]Product, 0)
+	for results.Next() {
+		var product Product
+		results.Scan(
+			&product.ProductID,
+			&product.Manufacturer,
+			&product.Sku,
+			&product.Upc,
+			&product.PricePerUnit,
+			&product.QuantityOnHand,
+			&product.ProductName)
+		products = append(products, product)
+	}
+	return products, nil
 }
 
 func getProductIds() []int {
