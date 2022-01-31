@@ -1,0 +1,29 @@
+[
+    {
+        "productId" : 1,
+        "manufacturer" : "VietDuc",
+        "sku" : "221212hj1h2j12",
+        "upc" : "1287873",
+        "pricePerUnit" : "400.26",
+        "quantityOnHand" : 5005,
+        "productName" : "alphabet board"
+    },
+    {
+        "productId" : 2,
+        "manufacturer" : "Uni",
+        "sku" : "121212hjh12",
+        "upc" : "2121212",
+        "pricePerUnit" : "325.12",
+        "quantityOnHand" : 2000,
+        "productName" : "guitar"
+    },
+    {
+        "productId" : 3,
+        "manufacturer" : "Nissan",
+        "sku" : "1212saa",
+        "upc" : "12232323",
+        "pricePerUnit" : "436.26",
+        "quantityOnHand" : 5905,
+        "productName" : "lamp shade"
+    }
+]
