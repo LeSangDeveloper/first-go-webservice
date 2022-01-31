@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"pluralsight/gowebservice/cors"
 	"strconv"
@@ -24,14 +25,19 @@ func productHandler(w http.ResponseWriter, r *http.Request) {
 	productID, err := strconv.Atoi(urlPathSegment[len(urlPathSegment)-1])
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
-	}
-	productObject := getProduct(productID)
-	if productObject == nil {
-		w.WriteHeader(http.StatusNotFound)
 		return
 	}
 	switch r.Method {
 	case http.MethodGet:
+		productObject, err := getProduct(productID)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		if productObject == nil {
+			w.WriteHeader(http.StatusNotFound)
+			return
+		}
 		productJSON, err := json.Marshal(productObject)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
@@ -55,7 +61,12 @@ func productHandler(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
-		addOrUpdateProduct(updatedProduct)
+		err = updateProduct(updatedProduct)
+		if err != nil {
+			log.Print(err)
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
 		w.WriteHeader(http.StatusOK)
 		return
 	case http.MethodDelete:
@@ -99,7 +110,7 @@ func productsHandler(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
-		_, err = addOrUpdateProduct(newProduct)
+		_, err = insertProduct(newProduct)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
